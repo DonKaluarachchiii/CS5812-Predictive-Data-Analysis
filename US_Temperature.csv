@@ -1,0 +1,613 @@
+﻿City,Month,Max Temp,Min Temp
+Albuquerque,January,2.4,-36.4
+Albuquerque,February,5.2,-41.4
+Albuquerque,March,8.9,-48.1
+Albuquerque,April,13.3,-56
+Albuquerque,May,18.7,-65.6
+Albuquerque,June,23.8,-74.9
+Albuquerque,July,25.7,-78.3
+Albuquerque,August,24.6,-76.2
+Albuquerque,September,20.7,-69.3
+Albuquerque,October,14.2,-57.5
+Albuquerque,November,7.2,-44.9
+Albuquerque,December,2.4,-36.3
+Anchorage,January,−8.3,-17.1
+Anchorage,February,−6.6,-20.2
+Anchorage,March,−3.0,-26.6
+Anchorage,April,2.7,-36.8
+Anchorage,May,8.8,-47.8
+Anchorage,June,12.9,-55.2
+Anchorage,July,14.9,-58.8
+Anchorage,August,13.7,-56.7
+Anchorage,September,9.2,-48.6
+Anchorage,October,1.6,-34.8
+Anchorage,November,−5.4,-22.2
+Anchorage,December,−7.2,-19
+Atlanta,January,6.4,-43.5
+Atlanta,February,8.6,-47.4
+Atlanta,March,12.6,-54.6
+Atlanta,April,16.7,-62.1
+Atlanta,May,21.3,-70.3
+Atlanta,June,25.2,-77.4
+Atlanta,July,26.9,-80.4
+Atlanta,August,26.4,-79.5
+Atlanta,September,23.1,-73.5
+Atlanta,October,17.4,-63.4
+Atlanta,November,12.3,-54.1
+Atlanta,December,7.5,-45.5
+Austin,January,10.8,-51.5
+Austin,February,12.8,-55
+Austin,March,16.5,-61.7
+Austin,April,20.7,-69.2
+Austin,May,24.8,-76.6
+Austin,June,27.9,-82.2
+Austin,July,29.4,-85
+Austin,August,29.9,-85.8
+Austin,September,26.7,-80
+Austin,October,21.8,-71.2
+Austin,November,16.1,-61
+Austin,December,11.4,-52.5
+Baltimore,January,0.8,-33.5
+Baltimore,February,2.4,-36.4
+Baltimore,March,6.8,-44.2
+Baltimore,April,12.4,-54.3
+Baltimore,May,17.6,-63.6
+Baltimore,June,22.8,-73
+Baltimore,July,25.3,-77.6
+Baltimore,August,24.3,-75.7
+Baltimore,September,20.2,-68.4
+Baltimore,October,13.7,-56.7
+Baltimore,November,8.3,-47
+Baltimore,December,2.9,-37.3
+Boise,January,−0.4,-31.3
+Boise,February,2.5,-36.5
+Boise,March,6.9,-44.5
+Boise,April,10.4,-50.8
+Boise,May,15.1,-59.1
+Boise,June,19.7,-67.5
+Boise,July,24.3,-75.8
+Boise,August,23.7,-74.7
+Boise,September,18.3,-64.9
+Boise,October,11.6,-52.8
+Boise,November,4.4,-40
+Boise,December,−0.7,-30.7
+Boston,January,−1.5,-29.3
+Boston,February,0,-32
+Boston,March,3.7,-38.6
+Boston,April,9.1,-48.4
+Boston,May,14.6,-58.2
+Boston,June,20,-68
+Boston,July,23.2,-73.7
+Boston,August,22.4,-72.4
+Boston,September,18.4,-65.2
+Boston,October,12.4,-54.3
+Boston,November,7.2,-45
+Boston,December,1.7,-35
+Charlotte,January,5.1,-41.2
+Charlotte,February,7.2,-45
+Charlotte,March,11.3,-52.3
+Charlotte,April,15.8,-60.5
+Charlotte,May,20.3,-68.5
+Charlotte,June,24.7,-76.4
+Charlotte,July,26.4,-79.6
+Charlotte,August,25.8,-78.4
+Charlotte,September,22.2,-71.9
+Charlotte,October,16.3,-61.3
+Charlotte,November,11.1,-51.9
+Charlotte,December,6.3,-43.4
+Chicago,January,−4.6,-23.7
+Chicago,February,−2.4,-27.7
+Chicago,March,3.2,-37.7
+Chicago,April,9.4,-48.9
+Chicago,May,15,-59
+Chicago,June,20.5,-68.9
+Chicago,July,23.3,-73.9
+Chicago,August,22.4,-72.3
+Chicago,September,18.1,-64.5
+Chicago,October,11.4,-52.5
+Chicago,November,4.6,-40.3
+Chicago,December,−2.4,-27.7
+Columbus,January,−1.6,-29.2
+Columbus,February,0.2,-32.4
+Columbus,March,5.3,-41.5
+Columbus,April,11.5,-52.7
+Columbus,May,16.8,-62.2
+Columbus,June,21.8,-71.2
+Columbus,July,23.8,-74.9
+Columbus,August,23.1,-73.6
+Columbus,September,19.1,-66.4
+Columbus,October,12.6,-54.7
+Columbus,November,6.7,-44
+Columbus,December,0.6,-33.1
+Dallas,January,7.7,-45.9
+Dallas,February,9.9,-49.9
+Dallas,March,14.2,-57.6
+Dallas,April,18.6,-65.5
+Dallas,May,23.3,-73.9
+Dallas,June,27.4,-81.4
+Dallas,July,29.7,-85.5
+Dallas,August,29.8,-85.7
+Dallas,September,25.6,-78.1
+Dallas,October,19.8,-67.6
+Dallas,November,13.7,-56.6
+Dallas,December,8.4,-47.2
+Denver,January,−0.3,-31.4
+Denver,February,0.8,-33.4
+Denver,March,4.8,-40.7
+Denver,April,8.9,-48
+Denver,May,14.2,-57.6
+Denver,June,19.7,-67.4
+Denver,July,23.4,-74.1
+Denver,August,22.3,-72.1
+Denver,September,17.3,-63.2
+Denver,October,10.4,-50.7
+Denver,November,3.8,-38.9
+Denver,December,−0.9,-30.3
+Detroit,January,−3.7,-25.3
+Detroit,February,−2.3,-27.9
+Detroit,March,2.7,-36.9
+Detroit,April,9.4,-49
+Detroit,May,15.2,-59.4
+Detroit,June,20.7,-69.2
+Detroit,July,23,-73.4
+Detroit,August,22.1,-71.8
+Detroit,September,17.9,-64.2
+Detroit,October,11.2,-52.2
+Detroit,November,5.2,-41.3
+Detroit,December,−1.2,-29.9
+El Paso,January,7.3,-45.2
+El Paso,February,10.1,-50.2
+El Paso,March,13.7,-56.7
+El Paso,April,18.2,-64.7
+El Paso,May,23.3,-74
+El Paso,June,27.7,-81.8
+El Paso,July,28.2,-82.8
+El Paso,August,27.3,-81.1
+El Paso,September,24.1,-75.4
+El Paso,October,18.4,-65.2
+El Paso,November,11.7,-53.1
+El Paso,December,7.2,-44.9
+Fairbanks,January,−21.9,(−7.5)
+Fairbanks,February,−18.3,(−0.9)
+Fairbanks,March,−11.2,-11.8
+Fairbanks,April,0.5,-32.9
+Fairbanks,May,9.9,-49.8
+Fairbanks,June,16,-60.8
+Fairbanks,July,17.1,-62.8
+Fairbanks,August,13.6,-56.5
+Fairbanks,September,7.3,-45.2
+Fairbanks,October,−4.2,-24.4
+Fairbanks,November,−16.2,-2.9
+Fairbanks,December,−19.8,(−3.7)
+Fresno,January,8.1,-46.6
+Fresno,February,10.8,-51.5
+Fresno,March,13.7,-56.6
+Fresno,April,16.7,-62
+Fresno,May,21.2,-70.1
+Fresno,June,25.1,-77.2
+Fresno,July,28.3,-83
+Fresno,August,27.6,-81.7
+Fresno,September,24.6,-76.2
+Fresno,October,19,-66.2
+Fresno,November,12.4,-54.3
+Fresno,December,8.1,-46.5
+Houston,January,11.5,-52.7
+Houston,February,13.3,-56
+Houston,March,16.9,-62.4
+Houston,April,20.7,-69.2
+Houston,May,24.8,-76.6
+Houston,June,27.7,-81.9
+Houston,July,28.9,-84
+Houston,August,29,-84.2
+Houston,September,26.3,-79.4
+Houston,October,21.7,-71.1
+Houston,November,16.6,-61.9
+Houston,December,12.3,-54.1
+Indianapolis,January,−2.2,-28.1
+Indianapolis,February,0.1,-32.2
+Indianapolis,March,5.7,-42.3
+Indianapolis,April,11.8,-53.2
+Indianapolis,May,17.2,-62.9
+Indianapolis,June,22.3,-72.2
+Indianapolis,July,24.2,-75.5
+Indianapolis,August,23.5,-74.3
+Indianapolis,September,19.5,-67.1
+Indianapolis,October,12.9,-55.2
+Indianapolis,November,6.6,-43.8
+Indianapolis,December,−0.1,-31.8
+Jacksonville,January,11.7,-53.1
+Jacksonville,February,13.6,-56.4
+Jacksonville,March,16.5,-61.7
+Jacksonville,April,19.4,-66.9
+Jacksonville,May,23.4,-74.1
+Jacksonville,June,26.7,-80
+Jacksonville,July,27.9,-82.3
+Jacksonville,August,27.6,-81.7
+Jacksonville,September,25.7,-78.2
+Jacksonville,October,21.3,-70.4
+Jacksonville,November,16.8,-62.2
+Jacksonville,December,12.9,-55.2
+Kansas City,January,−1.8,-28.8
+Kansas City,February,0.8,-33.5
+Kansas City,March,6.8,-44.2
+Kansas City,April,12.7,-54.8
+Kansas City,May,18.1,-64.5
+Kansas City,June,23.1,-73.5
+Kansas City,July,25.7,-78.3
+Kansas City,August,25,-77
+Kansas City,September,20.1,-68.1
+Kansas City,October,13.5,-56.3
+Kansas City,November,6.4,-43.6
+Kansas City,December,−0.3,-31.4
+Las Vegas,January,8.8,-47.8
+Las Vegas,February,11.1,-52
+Las Vegas,March,15,-59
+Las Vegas,April,19.1,-66.4
+Las Vegas,May,24.7,-76.5
+Las Vegas,June,29.9,-85.8
+Las Vegas,July,33.2,-91.7
+Las Vegas,August,32.1,-89.8
+Las Vegas,September,27.6,-81.7
+Las Vegas,October,20.4,-68.7
+Las Vegas,November,13.1,-55.6
+Las Vegas,December,8.2,-46.8
+Lake Havasu City,January,12.2,-54
+Lake Havasu City,February,14.6,-58.3
+Lake Havasu City,March,18.1,-64.5
+Lake Havasu City,April,22.4,-72.4
+Lake Havasu City,May,27.9,-82.2
+Lake Havasu City,June,32.7,-90.9
+Lake Havasu City,July,36.1,-96.9
+Lake Havasu City,August,35.5,-95.9
+Lake Havasu City,September,31.3,-88.3
+Lake Havasu City,October,24.1,-75.3
+Lake Havasu City,November,17,-62.6
+Lake Havasu City,December,11.7,-53
+Los Angeles,January,14.4,-58
+Los Angeles,February,14.9,-58.9
+Los Angeles,March,15.9,-60.6
+Los Angeles,April,17.3,-63.1
+Los Angeles,May,18.8,-65.8
+Los Angeles,June,20.7,-69.2
+Los Angeles,July,22.9,-73.3
+Los Angeles,August,23.5,-74.3
+Los Angeles,September,22.8,-73.1
+Los Angeles,October,20.3,-68.6
+Los Angeles,November,16.9,-62.4
+Los Angeles,December,14.2,-57.6
+Louisville,January,1.1,-34
+Louisville,February,3.3,-37.9
+Louisville,March,8.3,-46.9
+Louisville,April,13.9,-57
+Louisville,May,18.9,-66.1
+Louisville,June,23.7,-74.6
+Louisville,July,25.7,-78.2
+Louisville,August,25.2,-77.3
+Louisville,September,21.1,-70
+Louisville,October,14.8,-58.6
+Louisville,November,8.7,-47.7
+Louisville,December,2.7,-36.9
+Memphis,January,5.2,-41.3
+Memphis,February,7.5,-45.5
+Memphis,March,12.2,-54
+Memphis,April,17.2,-63
+Memphis,May,22.1,-71.7
+Memphis,June,26.4,-79.6
+Memphis,July,28.2,-82.7
+Memphis,August,27.8,-82.1
+Memphis,September,24,-75.2
+Memphis,October,17.8,-64.1
+Memphis,November,11.8,-53.2
+Memphis,December,6.4,-43.6
+Miami,January,19.9,-67.9
+Miami,February,21.1,-70
+Miami,March,22.4,-72.4
+Miami,April,24.2,-75.6
+Miami,May,26.5,-79.7
+Miami,June,28.1,-82.5
+Miami,July,28.8,-83.9
+Miami,August,28.9,-84
+Miami,September,28.2,-82.7
+Miami,October,26.4,-79.6
+Miami,November,23.7,-74.7
+Miami,December,21.2,-70.2
+Milwaukee,January,−5.2,-22.6
+Milwaukee,February,−3.2,-26.3
+Milwaukee,March,1.9,-35.4
+Milwaukee,April,7.8,-46
+Milwaukee,May,13.3,-56
+Milwaukee,June,19.2,-66.6
+Milwaukee,July,22.3,-72.1
+Milwaukee,August,21.7,-71
+Milwaukee,September,17.4,-63.3
+Milwaukee,October,10.9,-51.6
+Milwaukee,November,4.1,-39.3
+Milwaukee,December,−2.9,-26.8
+Minneapolis,January,−9.1,-15.6
+Minneapolis,February,−6.2,-20.8
+Minneapolis,March,0.4,-32.7
+Minneapolis,April,8.6,-47.5
+Minneapolis,May,15.1,-59.1
+Minneapolis,June,20.4,-68.7
+Minneapolis,July,23.2,-73.7
+Minneapolis,August,21.7,-71.1
+Minneapolis,September,16.7,-62
+Minneapolis,October,9.4,-48.9
+Minneapolis,November,0.9,-33.7
+Minneapolis,December,−6.8,-19.7
+Nashville,January,3.4,-38.1
+Nashville,February,5.7,-42.2
+Nashville,March,10.3,-50.5
+Nashville,April,15.3,-59.5
+Nashville,May,20,-68
+Nashville,June,24.6,-76.2
+Nashville,July,26.6,-79.9
+Nashville,August,26.2,-79.2
+Nashville,September,22.2,-72
+Nashville,October,16,-60.8
+Nashville,November,10.2,-50.3
+Nashville,December,4.9,-40.9
+New Orleans,January,11.6,-52.9
+New Orleans,February,13.4,-56.2
+New Orleans,March,16.8,-62.2
+New Orleans,April,20.3,-68.6
+New Orleans,May,24.6,-76.2
+New Orleans,June,27.2,-81
+New Orleans,July,28.2,-82.8
+New Orleans,August,28.2,-82.8
+New Orleans,September,26.2,-79.2
+New Orleans,October,21.6,-70.8
+New Orleans,November,16.8,-62.2
+New Orleans,December,12.9,-55.2
+New York,January,0.6,-33
+New York,February,2.1,-35.7
+New York,March,6.1,-42.9
+New York,April,11.9,-53.4
+New York,May,17.1,-62.8
+New York,June,22.1,-71.8
+New York,July,24.9,-76.9
+New York,August,24.3,-75.7
+New York,September,20.2,-68.4
+New York,October,14.1,-57.3
+New York,November,8.9,-48.1
+New York,December,3.3,-37.9
+Oklahoma,January,3.6,-38.4
+Oklahoma,February,6.1,-42.9
+Oklahoma,March,10.7,-51.3
+Oklahoma,April,15.6,-60.1
+Oklahoma,May,20.6,-69
+Oklahoma,June,25.1,-77.1
+Oklahoma,July,27.8,-82.1
+Oklahoma,August,27.6,-81.6
+Oklahoma,September,22.8,-73.1
+Oklahoma,October,16.5,-61.7
+Oklahoma,November,9.9,-49.9
+Oklahoma,December,4.3,-39.7
+Omaha,January,−4.6,-23.7
+Omaha,February,−2.1,-28.3
+Omaha,March,4.2,-39.5
+Omaha,April,10.9,-51.7
+Omaha,May,16.9,-62.5
+Omaha,June,22.3,-72.2
+Omaha,July,24.8,-76.7
+Omaha,August,23.7,-74.6
+Omaha,September,18.8,-65.9
+Omaha,October,11.8,-53.3
+Omaha,November,3.8,-38.9
+Omaha,December,−3.3,-26.1
+Palm Springs,January,16.3,-61.3
+Palm Springs,February,18.1,-64.5
+Palm Springs,March,20.7,-69.2
+Palm Springs,April,23.7,-74.6
+Palm Springs,May,26.8,-80.3
+Palm Springs,June,30.7,-87.3
+Palm Springs,July,33.8,-92.8
+Palm Springs,August,33.6,-92.5
+Palm Springs,September,30.5,-86.9
+Palm Springs,October,24.9,-76.8
+Palm Springs,November,19.2,-66.6
+Palm Springs,December,15.7,-60.2
+Philadelphia,January,0.5,-32.9
+Philadelphia,February,2,-35.6
+Philadelphia,March,6.4,-43.5
+Philadelphia,April,12.2,-54
+Philadelphia,May,17.7,-63.8
+Philadelphia,June,22.9,-73.2
+Philadelphia,July,25.6,-78.1
+Philadelphia,August,24.7,-76.5
+Philadelphia,September,20.6,-69.1
+Philadelphia,October,14.2,-57.5
+Philadelphia,November,8.7,-47.6
+Philadelphia,December,3,-37.4
+Phoenix,January,13.6,-56.5
+Phoenix,February,15.4,-59.8
+Phoenix,March,18.5,-65.3
+Phoenix,April,22.7,-72.8
+Phoenix,May,27.8,-82.1
+Phoenix,June,32.7,-90.9
+Phoenix,July,34.9,-94.8
+Phoenix,August,34.2,-93.6
+Phoenix,September,31.3,-88.4
+Phoenix,October,24.8,-76.7
+Phoenix,November,17.9,-64.2
+Phoenix,December,13.1,-55.5
+Pittsburgh,January,−1.9,-28.5
+Pittsburgh,February,−0.4,-31.3
+Pittsburgh,March,4.3,-39.8
+Pittsburgh,April,10.6,-51.1
+Pittsburgh,May,15.7,-60.2
+Pittsburgh,June,20.5,-68.9
+Pittsburgh,July,22.7,-72.8
+Pittsburgh,August,22,-71.6
+Pittsburgh,September,17.9,-64.3
+Pittsburgh,October,11.6,-52.9
+Pittsburgh,November,6.2,-43.1
+Pittsburgh,December,0.3,-32.5
+Portland ,January,5.2,-41.4
+Portland ,February,6.6,-43.8
+Portland ,March,8.9,-48.1
+Portland ,April,11.3,-52.3
+Portland ,May,14.6,-58.3
+Portland ,June,17.6,-63.6
+Portland ,July,20.7,-69.2
+Portland ,August,20.9,-69.6
+Portland ,September,18.1,-64.5
+Portland ,October,12.7,-54.9
+Portland ,November,8.1,-46.6
+Portland ,December,4.7,-40.4
+Sacramento,January,8.1,-46.6
+Sacramento,February,10.6,-51.1
+Sacramento,March,12.7,-54.9
+Sacramento,April,15,-59
+Sacramento,May,18.8,-65.8
+Sacramento,June,22.1,-71.7
+Sacramento,July,24.2,-75.5
+Sacramento,August,23.8,-74.9
+Sacramento,September,22.1,-71.7
+Sacramento,October,17.9,-64.2
+Sacramento,November,11.9,-53.5
+Sacramento,December,8,-46.4
+Salt Lake,January,−1.3,-29.6
+Salt Lake,February,1.3,-34.3
+Salt Lake,March,6.6,-43.8
+Salt Lake,April,10.4,-50.7
+Salt Lake,May,15.5,-59.9
+Salt Lake,June,21.1,-69.9
+Salt Lake,July,26.1,-78.9
+Salt Lake,August,25.1,-77.2
+Salt Lake,September,19.1,-66.3
+Salt Lake,October,11.8,-53.2
+Salt Lake,November,4.6,-40.2
+Salt Lake,December,−0.8,-30.5
+San Antonio,January,11,-51.8
+San Antonio,February,13.1,-55.6
+San Antonio,March,16.8,-62.2
+San Antonio,April,20.8,-69.5
+San Antonio,May,25,-77
+San Antonio,June,28.1,-82.5
+San Antonio,July,29.3,-84.7
+San Antonio,August,29.7,-85.4
+San Antonio,September,26.6,-79.8
+San Antonio,October,21.8,-71.3
+San Antonio,November,16.2,-61.2
+San Antonio,December,11.6,-52.9
+San Diego,January,14.2,-57.6
+San Diego,February,14.7,-58.4
+San Diego,March,15.5,-59.9
+San Diego,April,16.8,-62.3
+San Diego,May,18.1,-64.5
+San Diego,June,19.4,-67
+San Diego,July,21.4,-70.5
+San Diego,August,22.2,-72
+San Diego,September,21.7,-71
+San Diego,October,19.6,-67.2
+San Diego,November,16.6,-61.8
+San Diego,December,13.9,-57.1
+San Francisco,January,11.2,-52.1
+San Francisco,February,12.6,-54.7
+San Francisco,March,13.3,-56
+San Francisco,April,13.9,-57.1
+San Francisco,May,14.7,-58.5
+San Francisco,June,15.8,-60.5
+San Francisco,July,16.3,-61.3
+San Francisco,August,16.9,-62.5
+San Francisco,September,17.5,-63.5
+San Francisco,October,16.8,-62.3
+San Francisco,November,14.1,-57.4
+San Francisco,December,11.4,-52.5
+San Jose,January,10.8,-51.5
+San Jose,February,12.5,-54.5
+San Jose,March,13.8,-56.9
+San Jose,April,15.2,-59.3
+San Jose,May,17.8,-64
+San Jose,June,20.2,-68.3
+San Jose,July,21.6,-70.9
+San Jose,August,21.8,-71.2
+San Jose,September,20.7,-69.2
+San Jose,October,17.9,-64.3
+San Jose,November,13.9,-57
+San Jose,December,10.6,-51.1
+Seattle,January,5.4,-41.8
+Seattle,February,6.2,-43.2
+Seattle,March,7.9,-46.3
+Seattle,April,10.1,-50.2
+Seattle,May,13.2,-55.8
+Seattle,June,15.9,-60.7
+Seattle,July,18.6,-65.5
+Seattle,August,18.8,-65.9
+Seattle,September,16.2,-61.1
+Seattle,October,11.4,-52.6
+Seattle,November,7.4,-45.3
+Seattle,December,4.7,-40.4
+St. Louis,January,−0.1,-31.8
+St. Louis,February,2.4,-36.3
+St. Louis,March,7.9,-46.3
+St. Louis,April,14.1,-57.3
+St. Louis,May,19.3,-66.8
+St. Louis,June,24.4,-75.9
+St. Louis,July,26.7,-80
+St. Louis,August,25.9,-78.6
+St. Louis,September,21.3,-70.4
+St. Louis,October,14.8,-58.7
+St. Louis,November,8.2,-46.8
+St. Louis,December,1.6,-34.8
+Tampa,January,15.9,-60.6
+Tampa,February,17.3,-63.2
+Tampa,March,19.5,-67.1
+Tampa,April,22.1,-71.7
+Tampa,May,25.7,-78.2
+Tampa,June,27.8,-82
+Tampa,July,28.2,-82.8
+Tampa,August,28.3,-83
+Tampa,September,27.5,-81.5
+Tampa,October,24.4,-76
+Tampa,November,20.6,-69
+Tampa,December,17.2,-63
+Tucson,January,11.6,-52.9
+Tucson,February,13.1,-55.6
+Tucson,March,15.8,-60.5
+Tucson,April,19.7,-67.4
+Tucson,May,24.6,-76.3
+Tucson,June,29.6,-85.2
+Tucson,July,30.8,-87.4
+Tucson,August,29.8,-85.7
+Tucson,September,27.7,-81.9
+Tucson,October,21.9,-71.4
+Tucson,November,15.6,-60.1
+Tucson,December,11.3,-52.3
+Virginia,January,4.9,-40.8
+Virginia,February,6.1,-43
+Virginia,March,9.8,-49.7
+Virginia,April,14.8,-58.6
+Virginia,May,19.4,-67
+Virginia,June,24.3,-75.7
+Virginia,July,26.7,-80
+Virginia,August,25.7,-78.3
+Virginia,September,22.6,-72.6
+Virginia,October,16.9,-62.4
+Virginia,November,11.8,-53.2
+Virginia,December,6.9,-44.5
+Washington DC,January,2.3,-36.1
+Washington DC,February,3.9,-39.1
+Washington DC,March,8.3,-46.9
+Washington DC,April,13.8,-56.9
+Washington DC,May,18.9,-66.1
+Washington DC,June,24.1,-75.3
+Washington DC,July,26.6,-79.8
+Washington DC,August,25.7,-78.2
+Washington DC,September,21.7,-71.1
+Washington DC,October,15.3,-59.6
+Washington DC,November,9.8,-49.6
+Washington DC,December,4.3,-39.8
+Wichita,January,0.1,-32.2
+Wichita,February,2.9,-37.2
+Wichita,March,8.1,-46.5
+Wichita,April,13.4,-56.1
+Wichita,May,18.9,-66
+Wichita,June,24.3,-75.8
+Wichita,July,27.3,-81.1
+Wichita,August,26.7,-80
+Wichita,September,21.7,-71
+Wichita,October,14.6,-58.3
+Wichita,November,7.4,-45.4
+Wichita,December,0.9,-33.7

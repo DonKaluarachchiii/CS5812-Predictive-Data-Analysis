@@ -9,4 +9,4 @@ Files:
 - CS5812_Cleaning_and_Preparation.Rmd: File containing the code used for the data cleaning and prepa ration of this project carried out in the programming language R.
 - CS5812_Exploratory_Data_Analysis.Rmd: File containing the code used for the exploratory data analysis  carried out in the programming language R. 
 - CS5812_Machine_Learning_Model.Rmd: File containing the code used to build the machine learning  model to make predictions carried out in the programming language R.
-- - CS5812_Deep_Learning_Model.ipynb: File containing the code used build the deep learning model to  make predictions carried out in the programming language R.
+- CS5812_Deep_Learning_Model.ipynb: File containing the code used build the deep learning model to  make predictions carried out in the programming language R.

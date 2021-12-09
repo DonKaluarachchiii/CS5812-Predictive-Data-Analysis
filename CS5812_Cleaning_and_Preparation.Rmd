@@ -1,0 +1,819 @@
+---
+title: "CS5812: Predictive Data Analysis Coursework"
+output: html_notebook
+author: 1724017 (Vasile Damian), 1736500 (Don Kaluarachchi), 2045256 (Taruna Bagh), 2045325 (Dalia Albusairi), and 2049384 (Amir Muna)
+---
+
+<center>
+[![](https://www.brunel.ac.uk/SiteElements/images/brunel-logo-blue.png)](https://www.brunel.ac.uk/)
+</center>
+
+# CS5812: Predictive Data Analysis Coursework
+
+### Data Description and Research Question
+### **Data Preparation and Cleaning**
+### Exploratory Data Analysis
+### Machine Learning Prediction
+### Deep Learning Prediction
+### Performance Evaluation and Comparison of Methods
+### Discussion of the Findings
+### Data Management Plan and Author Contribution statement
+
+# **Data Preparation and Cleaning**
+
+```{r}
+# Installing 'ggplot2'
+#install.packages("ggplot2")
+# Loading the 'ggplot2' library
+library(ggplot2)
+
+# Installing 'dplyr'
+#install.packages("dplyr")
+# Loading the 'dplyr' library
+library(dplyr)
+
+# Installing 'plyr'
+#install.packages("plyr")
+# Loading the 'plyr' library
+library(plyr)
+
+# Installing 'tidyr'
+#install.packages("tidyr")
+# Loading the 'tidyr' library
+library(tidyr)
+
+# Installing 'tibble'
+#install.packages("tibble")
+# Loading the 'tibble' library
+library(tibble)
+
+# Installing 'VIM'
+#install.packages("VIM")
+# Loading the 'VIM' library
+library(VIM)
+
+# Installing 'validate'
+#install.packages("validate")
+# Loading the 'validate' library
+library(validate)
+
+# Installing 'parallel'
+#install.packages("parallel")
+# Loading the 'parallel' library
+library(parallel)
+
+# Installing 'checkmate'
+#install.packages("checkmate")
+# Loading the 'checkmate' library
+library(checkmate)
+
+# Installing 'lubridate'
+#install.packages("lubridate")
+# Loading the 'lubridate' library
+library(lubridate)
+
+# Installing 'data.table'
+#install.packages("data.table")
+# Loading the 'data.table' library
+library(data.table)
+
+# Installing 'scatterplot3d'
+#install.packages("scatterplot3d")
+# Loading the 'scatterplot3d' library
+library(scatterplot3d)
+
+```
+
+### Author: *Taruna Bagh*
+
+```{r}
+
+# We are performing the data preparation on Delayed Flights and Merging it with airports, Temperature and Weather datasets for checking the correlation amongst them.
+
+# Below are the links to the datasets used 
+# For temperature and weather  -> https://www.kaggle.com/selfishgene/historical-hourly-weather-data?select=temperature.csv
+# For airports -> https://www.kaggle.com/aravindram11/list-of-us-airports
+# For delayed flights -> https://www.kaggle.com/giovamata/airlinedelaycauses
+
+DelayedFlights <- read.csv("Delayed_Flights.csv")
+#converting it to string
+str(DelayedFlights)
+
+#checking column headings and tail
+head(DelayedFlights)
+
+
+tail(DelayedFlights)
+
+#names of elements
+names(DelayedFlights)
+
+#regression on delayed flights
+DelayedFlightsweather.lm<-lm(DelayedFlights$DepDelay~DelayedFlights$WeatherDelay, data=DelayedFlights)
+DelayedFlightsweather.lm
+plot(DelayedFlightsweather.lm)
+
+head(DelayedFlights)
+
+#read airports and delayed flights 
+airports <- read.csv("https://raw.githubusercontent.com/DonKaluarachchiii/CS5812-Predictive-Data-Analysis/main/Airport_Details.csv")
+head(airports)
+View(airports)
+```
+
+### Author: *Don Kaluarachchi*
+
+```{r}
+
+```
+
+
+### Author: *Taruna Bagh*
+
+```{r}
+#merging delayedflights dataset with airports for cities by origin
+DelayFlightAir <- merge(DelayedFlights,airports,by.x="Origin",by.y="IATA")
+
+#Renaming the city datasets to origin for easy distinguish
+DelayFlightAir<-rename(DelayFlightAir, c("CITY"="Origin City", "STATE"="Origin State", "COUNTRY"="Origin Country","LATITUDE"="Origin Latitude","LONGITUDE"="Origin Longitude"))
+
+DelayFlightAir
+
+#merging DelayFlightAir dataset with airports for cities by destination
+DelayFlightAirport <- merge(DelayFlightAir,airports,by.x="Dest",by.y="IATA")
+
+#Renaming the city datasets to Destination for easy distinguish
+DelayFlightAirport<-rename(DelayFlightAirport, c("CITY"="Destination City", "STATE"="Destination State", "COUNTRY"="Destination Country","LATITUDE"="Destination Latitude","LONGITUDE"="Destination Longitude"))
+
+#Renaming the Airport names as well
+
+DelayFlightAirport<-rename(DelayFlightAirport, c("AIRPORT.x"="Origin Airport", "AIRPORT.y"="Destination Airport"))
+
+
+DelayFlightAirport
+
+#This completes the merge of Delayed flights with Airports dataset
+
+```
+
+# Preparing Weather dataset for merge
+
+```{r}
+#getting weather description datasets for merge preparation
+
+weather_description <- read.csv("weather_description.csv")
+head(weather_description)
+
+#The dataset seems to be in hourly format however we need it in monthly format. Hence we need to calculate the mode of weather conditions and apply aggregate to get the same
+#keeping the original dataset as it is and creating a new dataset for weather description
+
+weather_desc <-weather_description
+# Coversions From Categorical to numerical
+# mist - 1
+# scattered clouds - 2
+# light rain - 3
+# sky is clear - 4
+# broken clouds - 5
+# few clouds - 6
+# overcast clouds - 7
+# light intensity drizzle -8
+# heavy snow - 9
+# Haze - 10
+# haze - 10
+# fog - 11
+# light intensity shower rain - 12
+# moderate rain - 13
+
+replacingValues<- function(data) {
+  returnData <- mapvalues(data, from = c("mist", "scattered clouds", "light rain","sky is clear","broken clouds","few clouds","overcast clouds","light    intensity drizzle","heavy snow","haze", "fog","light intensity shower rain","moderate rain", "proximity shower rain", "proximity moderate rain", "proximity thunderstorm", "proximity thunderstorm with rain","proximity thunderstorm with drizzle","drizzle", "heavy intensity drizzle", "shower drizzle", "shower rain",  "very heavy rain","heavy intensity rain", "heavy intensity shower rain","light rain and snow", "light snow ", "light shower snow", "snow", "shower snow", "freezing rain", "thunderstorm with light rain","thunderstorm", "heavy thunderstorm", "thunderstorm with heavy rain","thunderstorm with rain", "thunderstorm with drizzle","thunderstorm with light drizzle", "smoke", "dust","sand", "sleet", "squalls", "sand/dust whirls","volcanic ash","tornado" ), to = c("1", "2","3","4","5","6","7","8", "9", "10" ,"11","12","13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46"))
+  return(returnData)
+}
+
+# proximity shower rain - 14
+# proximity moderate rain - 15
+# proximity thunderstorm - 16
+# proximity thunderstorm with rain - 17
+# proximity thunderstorm with drizzle - 18
+# drizzle - 19
+# heavy intensity drizzle - 20 
+# shower drizzle - 21
+# shower rain - 22
+# very heavy rain - 23
+# heavy intensity rain - 24
+# heavy intensity shower rain - 25
+# light rain and snow - 26
+# light snow - 27
+# light shower snow - 28
+# snow - 29
+# shower snow - 30 
+# freezing rain - 31
+# thunderstorm with light rain - 32 
+# thunderstorm - 33
+# heavy thunderstorm - 34
+# thunderstorm with heavy rain - 35
+# thunderstorm with rain - 36
+# thunderstorm with drizzle - 37
+# thunderstorm with light drizzle - 38
+# smoke - 39
+# dust - 40
+# sand - 41
+# sleet - 42
+# squalls - 43
+# sand/dust whirls - 44 
+# volcanic ash - 45
+# tornado - 46
+
+
+
+weatherLevels <- apply(weather_desc, 2, unique)
+
+str(weatherLevels)
+
+
+
+
+#---------------------------------------------- us cities
+weather_desc$Portland <- replacingValues(weather_desc$Portland)
+
+weather_desc$San.Francisco <- replacingValues(weather_desc$San.Francisco)
+
+weather_desc$Seattle <- replacingValues(weather_desc$Seattle)
+
+weather_desc$Los.Angeles <- replacingValues(weather_desc$Los.Angeles)
+
+weather_desc$San.Diego <- replacingValues(weather_desc$San.Diego)
+
+weather_desc$Las.Vegas <- replacingValues(weather_desc$Las.Vegas)
+
+weather_desc$Phoenix <- replacingValues(weather_desc$Phoenix)
+
+weather_desc$Albuquerque <- replacingValues(weather_desc$Albuquerque)
+
+weather_desc$Denver <- replacingValues(weather_desc$Denver)
+
+weather_desc$San.Antonio <- replacingValues(weather_desc$San.Antonio)
+
+weather_desc$Dallas <- replacingValues(weather_desc$Dallas)
+
+weather_desc$Houston <- replacingValues(weather_desc$Houston)
+
+weather_desc$Kansas.City <- replacingValues(weather_desc$Kansas.City)
+
+weather_desc$Minneapolis <- replacingValues(weather_desc$Minneapolis)
+
+weather_desc$Saint.Louis <- replacingValues(weather_desc$Saint.Louis)
+
+weather_desc$Chicago <- replacingValues(weather_desc$Chicago)
+
+weather_desc$Nashville <- replacingValues(weather_desc$Nashville)
+
+weather_desc$Indianapolis <- replacingValues(weather_desc$Indianapolis)
+
+weather_desc$Atlanta <- replacingValues(weather_desc$Atlanta)
+
+weather_desc$Detroit <- replacingValues(weather_desc$Detroit)
+
+weather_desc$Jacksonville <- replacingValues(weather_desc$Jacksonville)
+
+weather_desc$Charlotte <- replacingValues(weather_desc$Charlotte)
+
+weather_desc$Miami <- replacingValues(weather_desc$Miami)
+
+weather_desc$Pittsburgh <- replacingValues(weather_desc$Pittsburgh)
+
+weather_desc$Toronto <- replacingValues(weather_desc$Toronto)
+
+weather_desc$Philadelphia <- replacingValues(weather_desc$Philadelphia)
+
+weather_desc$New.York <- replacingValues(weather_desc$New.York)
+
+weather_desc$Montreal <- replacingValues(weather_desc$Montreal)
+
+weather_desc$Boston <- replacingValues(weather_desc$Boston)
+#---------------------------------------------- us cities
+
+weather_desc$Vancouver <- replacingValues(weather_desc$Vancouver)
+
+weather_desc$Beersheba <- replacingValues(weather_desc$Beersheba)
+
+weather_desc$Eilat <- replacingValues(weather_desc$Eilat)
+
+weather_desc$Haifa <- replacingValues(weather_desc$Haifa)
+
+weather_desc$Nahariyya <- replacingValues(weather_desc$Nahariyya)
+
+weather_desc$Jerusalem <- replacingValues(weather_desc$Jerusalem)
+
+weather_desc$Tel.Aviv.District <- replacingValues(weather_desc$Tel.Aviv.District)
+
+
+
+
+weather_desc$Month_Yr <- format(as.Date(weather_desc$datetime), "%Y-%m")
+
+weather_desc
+
+#checking the datatypes of weather dataset
+str(weather_desc)
+
+#  Convert to date 
+weather_desc$datetime <- as.Date(weather_desc$datetime)
+
+#  Get months
+weather_desc$Month <- months(weather_desc$datetime )
+
+#  Get years
+weather_desc$Year <- format(weather_desc$datetime ,format="%y")
+
+#omiting columns with NA
+na.omit(weather_desc$Vancouver)
+
+#  converting the weather data as numeric
+weather_desc$Vancouver<-as.character(as.numeric(weather_desc$Vancouver))
+
+#writing function to get Mode for any fields
+Mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+#Keeping the list handy fot future changes
+# Vancouver = weather_desc$Vancouver,
+# Portland = weather_desc$Portland,
+# `San Francisco` = weather_desc$`San Francisco`,
+# Seattle = weather_desc$Seattle,
+#  `Los Angeles` = weather_desc$`Los Angeles`,
+#  `San Diego` = weather_desc$`San Diego`,
+#  `Las Vegas` = weather_desc$`Las Vegas`,
+#  Phoenix = weather_desc$Phoenix,
+#  Albuquerque = weather_desc$Albuquerque,
+#  Denver = weather_desc$Denver,
+# `San Antonio` = weather_desc$`San Antonio`,
+#  Dallas = weather_desc$Dallas,
+#  Houston = weather_desc$Houston,
+#  `Kansas City` = weather_desc$`Kansas City`,
+#  Minneapolis = weather_desc$Minneapolis,
+#  `Saint Louis` = weather_desc$`Saint Louis`,
+#  Chicago = weather_desc$Chicago,
+#  Nashville = weather_desc$Nashville,
+#  Indianapolis = weather_desc$Indianapolis,
+#  Atlanta = weather_desc$Atlanta,
+#  Detroit = weather_desc$Detroit,
+#  Jacksonville = weather_desc$Jacksonville,
+#  Charlotte = weather_desc$Charlotte,
+#  Miami = weather_desc$Miami,
+#  Pittsburgh = weather_desc$Pittsburgh,
+#  Toronto = weather_desc$Toronto,
+#  Philadelphia = weather_desc$Philadelphia,
+# `New York` = weather_desc$`New York`,
+#  Montreal = weather_desc$,
+#  Boston = weather_desc$Boston,
+#  Beersheba = weather_desc$,
+#  `Tel Aviv District` = weather_desc$`Tel Aviv District`,
+#  Eilat = weather_desc$Eilat,
+#  Haifa = weather_desc$Haifa,
+#  Nahariyya = weather_desc$Nahariyya,
+#  Jerusalem = weather_desc$Jerusalem
+
+#creating the aggregate dataset with cities along with descriptions as numeric fields for converting the data to month-yearly instead of hourly
+
+Visibility <-aggregate( list(Vancouver = weather_desc$Vancouver,
+Portland = weather_desc$Portland,
+San.Francisco = weather_desc$San.Francisco,
+Seattle = weather_desc$Seattle,
+ Los.Angeles = weather_desc$Los.Angeles,
+ San.Diego = weather_desc$San.Diego,
+ Las.Vegas = weather_desc$Las.Vegas,
+ Phoenix = weather_desc$Phoenix,
+ Albuquerque = weather_desc$Albuquerque,
+ Denver = weather_desc$Denver,
+ San.Antonio = weather_desc$San.Antonio,
+ Dallas = weather_desc$Dallas,
+ Houston = weather_desc$Houston,
+ Kansas.City = weather_desc$Kansas.City,
+ Minneapolis = weather_desc$Minneapolis,
+ Saint.Louis = weather_desc$Saint.Louis,
+ Chicago = weather_desc$Chicago,
+ Nashville = weather_desc$Nashville,
+ Indianapolis = weather_desc$Indianapolis,
+ Atlanta = weather_desc$Atlanta,
+ Detroit = weather_desc$Detroit,
+ Jacksonville = weather_desc$Jacksonville,
+ Charlotte = weather_desc$Charlotte,
+ Miami = weather_desc$Miami,
+ Pittsburgh = weather_desc$Pittsburgh,
+ Toronto = weather_desc$Toronto,
+ Philadelphia = weather_desc$Philadelphia,
+ New.York = weather_desc$New.York,
+ Montreal = weather_desc$Montreal,
+ Boston = weather_desc$Boston,
+ Beersheba = weather_desc$Beersheba,
+ Tel.Aviv.District = weather_desc$Tel.Aviv.District,
+ Eilat = weather_desc$Eilat,
+ Haifa = weather_desc$Haifa,
+ Nahariyya = weather_desc$Nahariyya,
+ Jerusalem = weather_desc$Jerusalem), by = list(Month=weather_desc$Month),  FUN=Mode )
+Visibility
+
+#We need the citywise dataset hence transforming the rows to columns
+
+replacingMonths<- function(data) {
+  returnData <- mapvalues(data, from = c("January", "February", "March", "April", "May", "June", "July", "August", "September","October", "November", "December"), to =c("1", "2","3", "4", "5", "6", "7", "8", "9", "10","11","12"))}
+
+Visibility$Month <- replacingMonths(Visibility$Month)
+
+weather_visibility <- as.data.frame(t(Visibility))
+str(weather_visibility)
+weather_visibility
+
+
+#We need the citywise dataset hence transforming the rows to columns
+setnames(weather_visibility, old = c("V1", "V2",  "V3",  "V4",  "V5",  "V6",  "V7",  "V8",  "V9",  "V10", "V11", "V12"), new = 
+c(Visibility$Month))
+weather_visibility <- weather_visibility[-1, ]          # removing the first row.
+weather_visibility
+#Adding header to the cities column in the dataset
+weather_visibility <- weather_visibility %>% 
+  rownames_to_column(var = "Cities")
+
+
+weather_visibility<- weather_visibility %>% gather("month", "value", -Cities)
+weather_visibility
+weather_visibility<-rename(weather_visibility, c("value"="visibility"))
+weather_visibility
+```
+
+### Author: *Taruna Bagh*
+
+```{r}
+temperature <- read.csv("https://raw.githubusercontent.com/DonKaluarachchiii/CS5812-Predictive-Data-Analysis/main/US_Temperature.csv")
+
+DelayFlightAirport
+#Converting month to integers for convenience of merging
+temperature$Month <- as.integer(factor(temperature$Month, levels = month.name))
+temperature
+
+#Removing all the "NA" variables
+DelayFlightAirport<-na.omit(DelayFlightAirport)
+
+#merging DelayFlightAir dataset with airports for cities by destination
+DelayFlightAirportVisibility <- merge(DelayFlightAirport,temperature,by.x=c("Origin City", "Month"),by.y=c("City","Month"))
+
+DelayFlightAirportVisibility
+
+DelayFlightAirportVisibility <- merge(DelayFlightAirportVisibility,weather_visibility,by.x=c("Origin City", "Month"),by.y=c("Cities","month"))
+
+DelayFlightAirportVisibility
+```
+
+```{r}
+write.csv(DelayFlightAirportVisibility, file="Delay_Flight_Airport_Visibility.csv")
+```
+
+### Author : *Taruna Bagh*
+
+```{r}
+#checking the final data frame
+str(DelayFlightAirportVisibility)
+DelayFlightAirportVisibility
+
+#Adding a new column date so we can analyse data with respect to month and year
+DelayFlightAirportVisibility$Date <- as.Date(with(DelayFlightAirportVisibility, paste(DayofMonth, Month, Year,sep="-")), "%d-%m-%Y")
+
+#Removing data that has NA 
+DelayFlightAirportVisibility <- na.omit(DelayFlightAirportVisibility)
+
+#qplot to check how the Max temperature looks like over the years
+qplot(x=Date, y=Max.Temp,
+      data=DelayFlightAirportVisibility, na.rm=TRUE,
+      main="US temp",
+      xlab="Date", ylab="Temperature (°C)")
+
+
+#scatterplot to see how minimum temperature and maximum temperatures behave over months
+scatterplot3d(DelayFlightAirportVisibility$Date, DelayFlightAirportVisibility$Min.Temp, color = DelayFlightAirportVisibility$Month, DelayFlightAirportVisibility$Max.Temp, pch = 16, 
+              grid = TRUE, box = FALSE, xlab = "Date", 
+              ylab = "min temp", zlab = "max temp")
+
+#scatterplot to see how visibility effects minimum temperatures 
+scatterplot3d(DelayFlightAirportVisibility$visibility, DelayFlightAirportVisibility$Min.Temp, color =DelayFlightAirportVisibility$visibility, DelayFlightAirportVisibility$Max.Temp, pch = 16, 
+              grid = TRUE, box = FALSE, xlab = "visibility", 
+              ylab = "min temp", zlab = "max temp")
+
+#correlation and regression on delayed flights based on carrier delay
+
+corDelayCarrier <- cor.test(DelayFlightAirportVisibility$DepDelay, DelayFlightAirportVisibility$CarrierDelay)
+corDelayCarrier
+
+DelayedFlightscarrier.lm<-lm(DelayedFlights$DepDelay~DelayedFlights$CarrierDelay, data=DelayedFlights)
+summary(DelayedFlightscarrier.lm)
+plot(DelayedFlightscarrier.lm)
+
+#correlation between Security delay and carrier delay
+corDelaySecurity <- cor.test(DelayFlightAirportVisibility$SecurityDelay, DelayFlightAirportVisibility$CarrierDelay)
+corDelaySecurity
+
+
+#correlation and regression on Flight delay based on Security delay
+corDelayFlightSecurity <- cor.test(DelayFlightAirportVisibility$SecurityDelay, DelayFlightAirportVisibility$DepDelay)
+corDelayFlightSecurity
+
+DelayedFlightsSecurity.lm<-lm(DelayedFlights$SecurityDelay~DelayedFlights$DepDelay, data=DelayedFlights)
+summary(DelayedFlightsSecurity.lm)
+plot(DelayedFlightsSecurity.lm)
+```
+### The scatterplots show huge variation in in temparatures over the year with similarities for monthly weather and slight variations in maximum temperature which seems to be an outlier. We can also see similar patterns for visibility for a few months where it changes seasonally and has a particular pattern.
+
+###From above correlations we can see that there is correlation between delay in departure of flights and carrier delay. Also delay in security has a very strong impact on departures and causing delays. 
+
+### Author: *Don Kaluarachchi*
+
+```{r}
+# Visualising the data. 
+head(DelayFlightAirportVisibility)
+
+# Creating a set of validation rules.
+validationCheck <- check_that(DelayFlightAirportVisibility,
+                         monthMinOK = Month <= 1,
+                         monthMinOK = Month >= 12,
+                         destOK = nchar(Dest) == 3, 
+                         originOK = nchar(Origin) == 3,
+                         yearOK = Year == 2008, 
+                         dayofMonthMaxOK = DayofMonth <= 1,
+                         dayofMonthMaxOK = DayofMonth <= 31,
+                         dayofWeekMaxOK = DayofWeek <= 1,
+                         dayofWeekMaxOK = DayofWeek <= 7)
+
+# Without giving each validation rule a name, they will be displayed as V1, V2, V3, and V4 which might make it more difficult to understand the purpose of the rules. Due to this, it is though that giving validation rules names is good practice. 
+
+barplot(validationCheck,
+     main="Validation Rules Check")
+```
+
+### Author: *Vasile Damian*
+#### 2. Imputing missing values / removing incomplete instances{#Imputing_missing_values}
+```{r}
+#checking for NA or missing values 
+apply(DelayFlightAirportVisibility, 2, function(x) any(is.na(x)))
+anyMissing(DelayFlightAirportVisibility)
+
+#Looking at the data for obvious mistakes
+str(DelayFlightAirportVisibility)
+view(DelayFlightAirportVisibility)
+summary(DelayFlightAirportVisibility)
+
+#checking Cancelled, cancellation code and Diverted Variables' distribution across factor levels
+table(DelayFlightAirportVisibility$Cancelled)
+table(DelayFlightAirportVisibility$CancellationCode)
+table(DelayFlightAirportVisibility$Diverted)
+table(DelayFlightAirportVisibility$`Origin Country`)
+table(DelayFlightAirportVisibility$`Destination Country`)
+
+#Removing X, Cancelled , cancellation code and Diverted Variable originally from DelayedFlights dataset that has the same value for all instances, additionally Cancellation code 'N' is not part of the Factor's original Levels impling that this is an error
+DelayFlightAirportVisibility <- subset(DelayFlightAirportVisibility, select = -c(Cancelled, CancellationCode, Diverted, X, `Origin Country`, `Destination Country`))
+
+#Setting Visibility as numeric
+DelayFlightAirportVisibility$visibility <- as.numeric(DelayFlightAirportVisibility$visibility)
+
+#some variables have have the time format of HHMM, such as 0345 being 03:45, however due to processing instances that start with 0, such as 0345, lost the 0, essentially being 345, which is inconsistent. This function is to add the missing 0's of said instances
+AddingZero<- function(x){
+  for (i in 1:length(x)){
+    if(nchar(x[i])==3){
+    x[i]<-(paste0("0", x[i]))
+    } else if(nchar(x[i])==2){
+    x[i]<-(paste0("00", x[i]))
+  } else if (nchar(x[i])==1){
+    x[i]<-(paste0("000", x[i]))
+  } 
+    }
+    return(x)
+}
+
+#adding 0's to all variables that need them // They need to stay in String form as if it's numeric it loses the HHMM format
+DelayFlightAirportVisibility$DepTime<-AddingZero(DelayFlightAirportVisibility$DepTime)
+DelayFlightAirportVisibility$ArrTime<-AddingZero(DelayFlightAirportVisibility$ArrTime)
+DelayFlightAirportVisibility$CRSDepTime<-AddingZero(DelayFlightAirportVisibility$CRSDepTime)
+DelayFlightAirportVisibility$CRSArrTime<-AddingZero(DelayFlightAirportVisibility$CRSArrTime)
+DelayFlightAirportVisibility$FlightNum<-AddingZero(DelayFlightAirportVisibility$FlightNum)
+
+
+#ActualElapsedTime and CRSElapsedTime have inconsistent values as such it will be imputed from ArrTime, DepTime ,CRSDepTime and CRSArrTime
+#Passing time format from HHMM to HH:MM 
+DepTimeHM<- format(strptime(DelayFlightAirportVisibility$DepTime, format="%H%M"), format = "%H:%M")
+ArrTimeHM<- format(strptime(DelayFlightAirportVisibility$ArrTime, format="%H%M"), format = "%H:%M")
+
+CRSDepTimeHM<- format(strptime(DelayFlightAirportVisibility$CRSDepTime, format="%H%M"), format = "%H:%M")
+CRSArrTimeHM<- format(strptime(DelayFlightAirportVisibility$CRSArrTime, format="%H%M"), format = "%H:%M")
+
+#converting to POSIXct time
+departureTimeCt<-as.POSIXct(DepTimeHM, format = "%H:%M")
+arrivalTimeCt<-as.POSIXct(ArrTimeHM, format = "%H:%M")
+
+CRSdepartureTimeCt<-as.POSIXct(CRSDepTimeHM, format = "%H:%M")
+CRSarrivalTimeCt<-as.POSIXct(CRSArrTimeHM, format = "%H:%M")
+
+#Arrival - Departure in seconds
+timeDifferenceSeconds <- as.numeric(arrivalTimeCt -departureTimeCt, units = "secs")
+CRStimeDifferenceSeconds <- as.numeric(CRSarrivalTimeCt -CRSdepartureTimeCt, units = "secs")
+
+#Arrival and departure delay calculation
+lateArrival <- as.numeric(arrivalTimeCt - CRSarrivalTimeCt, units = "secs")
+lateDeparture <- as.numeric(departureTimeCt - CRSdepartureTimeCt, units = "secs")
+lateDeparture
+
+#fixing instances where departure time is ex: 22:15 - 00:34 = -22:15 thus it adds 24 hours
+negativeTime<-function(x){
+  for (i in 1:length(x)){
+  if(x[i]<0){
+    x[i]<- x[i] + 86400 
+  }
+  }
+  return(x)}
+
+timeDifference <- negativeTime(timeDifferenceSeconds)
+CRStimeDifference<- negativeTime(CRStimeDifferenceSeconds)
+lateArrivalFixed <- negativeTime(lateArrival)
+timeDifferenceFixed <- negativeTime(lateDeparture)
+
+#transforming into Period for visibility pourposes
+timeDifferenceHMS <- seconds_to_period(timeDifferenceSeconds)
+CRStimeDifferenceHMS <- seconds_to_period(CRStimeDifferenceSeconds)
+
+lateArrivalHMS <- seconds_to_period(lateArrivalFixed)
+timeDifferenceHMS <- seconds_to_period(timeDifferenceFixed)
+
+timeDifferenceHMS
+CRStimeDifferenceHMS
+lateArrivalHMS
+timeDifferenceHMS
+
+#back to minutes
+DelayFlightAirportVisibility$ActualElapsedTime <- timeDifference / 60
+DelayFlightAirportVisibility$CRSElapsedTime <- CRStimeDifference / 60
+
+DelayFlightAirportVisibility$ArrDelay <- lateArrivalFixed / 60
+DelayFlightAirportVisibility$DepDelay <- timeDifferenceFixed / 60
+
+
+
+# CRSElapsedTime - same as ActualElapsedTime
+# AirTime - Most of the values are more than ActualElapsedTime which indicates a error, however since we don't have a way to impute it, we can't differentiate actuall instances from outliers, if there is any, as such these will be cought using the validator package
+#
+
+str(DelayFlightAirportVisibility)
+
+
+#Validator Rules
+delayFlightRules <- validator(
+                        sameDepAndArr = !DepTime == ArrTime,
+                        airTimeValidating = AirTime <= ActualElapsedTime,
+                  ArrDelayValidating = CarrierDelay + WeatherDelay + NASDelay + SecurityDelay + LateAircraftDelay >= ArrDelay,
+                        ElapsedTimeUnder = ActualElapsedTime >= 14,
+                        CRSElapsedTimeUnder = CRSElapsedTime >= 15)
+
+#Rules checking
+ruleChecking <- confront(DelayFlightAirportVisibility,delayFlightRules)
+summary(ruleChecking)
+
+#eliminating ElapsedTimeUnder under 14 which is the min from the original dataset
+DelayFlightAirportVisibilityMod1<-DelayFlightAirportVisibility[DelayFlightAirportVisibility$ActualElapsedTime >= 14, ]
+
+#eliminating CRSElapsedTimeUnder under 15 which is the min from the original dataset and also eliminating instances which have the same origin and destination airpot
+DelayFlightAirportVisibilityMod2<- DelayFlightAirportVisibilityMod1[DelayFlightAirportVisibilityMod1$CRSElapsedTime >= 15, ]
+
+#since AirTime is not imputed by the use of other variables it's value can't be imputed with precision and imputing with averges wouldn't be reliable, the best soluciton is to either remove the column or remove the instances, the latter is applied below
+DelayFlightAirportVisibilityMod3<- DelayFlightAirportVisibilityMod2[DelayFlightAirportVisibilityMod2$AirTime <= DelayFlightAirportVisibilityMod2$ActualElapsedTime,]
+
+#eliminating Instances that have ArrDelay
+DelayFlightAirportVisibilityMod4<- DelayFlightAirportVisibilityMod3[DelayFlightAirportVisibilityMod3$ArrDelay <= DelayFlightAirportVisibilityMod3$CarrierDelay +DelayFlightAirportVisibilityMod3$WeatherDelay+DelayFlightAirportVisibilityMod3$NASDelay+DelayFlightAirportVisibilityMod3$SecurityDelay+DelayFlightAirportVisibilityMod3$LateAircraftDelay,]
+
+
+str(DelayFlightAirportVisibility)
+write.csv(DelayFlightAirportVisibility, file="Delay_Flight_Airport_Visibility.csv")
+
+##outlier detection
+boxplot(DelayFlightAirportVisibilityMod4$AirTime)
+#airTimeBox
+ActualElapsedTimeBox <- boxplot(DelayFlightAirportVisibilityMod4$ActualElapsedTime)
+CRSElapsedTimeBox <- boxplot(DelayFlightAirportVisibilityMod4$CRSElapsedTime)
+
+#Checking for outliers and looking at varience on numerical variables, from previous analysis Variables Month, Year, DayofMonth, DayOfWeek
+boxplot(DelayFlightAirportVisibilityMod4$Month)
+boxplot(DelayFlightAirportVisibilityMod4$Year)
+boxplot(DelayFlightAirportVisibilityMod4$DayofMonth)
+boxplot(DelayFlightAirportVisibilityMod4$DayOfWeek)
+#----
+ActualElapsedTimeBox<-boxplot(DelayFlightAirportVisibilityMod4$ActualElapsedTime)
+CRSElapsedTimeBox<-boxplot(DelayFlightAirportVisibilityMod4$CRSElapsedTime)
+AirTimeBox<-boxplot(DelayFlightAirportVisibilityMod4$AirTime)
+ArrDelayBox<-boxplot(DelayFlightAirportVisibilityMod4$ArrDelay)
+DepDelayBox<-boxplot(DelayFlightAirportVisibilityMod4$DepDelay)
+
+# ActualElapsedTime and CRSLapsedTime - Instances where DepTime is slightly Higher than the ArrTime, thus being close to over 24 hours of flight which is unlikely given that flights are within the US, these instances will be removed
+DelayFlightAirportVisibilityMod5 <-DelayFlightAirportVisibilityMod4[DelayFlightAirportVisibilityMod4$ActualElapsedTime <= min(ActualElapsedTimeBox$out), ]
+DelayFlightAirportVisibilityMod6 <-DelayFlightAirportVisibilityMod5[DelayFlightAirportVisibilityMod5$CRSElapsedTime <= min(CRSElapsedTimeBox$out), ]
+
+```
+
+### Author: *Amir Muna*
+
+```{r}
+#Export the data set to a CSV file
+write.csv(DelayFlightAirportVisibilityMod6, file="Delay_Flight_Airport_Visibility_final.csv", sep = ",")
+```
+
+```{r}
+#Read in the data set
+df<-read.csv("~/Desktop/Masters/Delay_Flight_Airport_Visibility_final.csv")
+
+#Attach the dataframe in order to refer to the variables names directly 
+attach(df)
+
+#Visualise the dataframe contents
+df
+
+#Use the columns "Year", "Month" and "dayofMonth" to create a date format values' type
+#Replace the data in "Month" by the data merged above (For position convenience)
+df$Month <- as.Date(with(df, paste(Year, Month, DayofMonth,sep="-")), "%Y-%m-%d")
+
+#Change the name of the column "Month" to "Date"
+names(df)[names(df) == "Month"] <- "Date"
+
+#Remove the columnn "Year" and "dayofMonth"
+df = subset(df, select = -c(Year,DayofMonth))
+
+#Convert the column "DayOfWeek" from numbers to day names'
+df$DayOfWeek <- factor(df$DayOfWeek, labels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"), ordered = TRUE)
+
+#Change the name of the column "DayOfWeek" to "Weekday"
+names(df)[names(df) == "DayOfWeek"] <- "Weekday"
+
+#Change the name of the column "Origin" to "Origin.IATA"
+names(df)[names(df) == "Origin"] <- "Origin.IATA"
+#Change the name of the column "Dest" to "Destination.IATA"
+names(df)[names(df) == "Dest"] <- "Destination.IATA"
+
+#Split the variable DepTime into "DepHour" and "DepMinute" starting from the right side
+df <- separate(df, DepTime, into = c("DepHour", "DepMinute"), sep = -2, remove = FALSE)
+#Split the variable ArrTime into "ArrHour" and "ArrMinute" starting from the right side
+df <- separate(df, ArrTime, into = c("ArrHour", "ArrMinute"), sep = -2, remove = FALSE)
+#Split the variable CRSDepTime into "CRSDepHour" and "CRSDepMinute" starting from the right side
+df <- separate(df, CRSDepTime, into = c("CRSDepHour", "CRSDepMinute"), sep = -2, remove = FALSE)
+#Split the variable CRSArrTime into "CRSArrHour" and "CRSArrMinute" starting from the right side
+df <- separate(df, CRSArrTime, into = c("CRSArrHour", "CRSArrMinute"), sep = -2, remove = FALSE)
+
+#Group the variables "DepHour" and "DepMinute" back to DepTime adding a colon separator ":"
+#Group the variables "ArrHour" and "ArrMinute" back to ArrTime adding a colon separator ":"
+#Create a variable called CommunteTime containg the time between the flight landing and taking-off
+df <- df %>%
+  unite(DepTime, DepHour, DepMinute, sep = ":") %>%
+  unite(ArrTime, ArrHour, ArrMinute, sep = ":") %>%
+  mutate(CommuteTime = as.numeric(difftime(
+    as.POSIXct(sprintf("%04s", ArrTime), format = "%H:%M"), 
+    as.POSIXct(sprintf("%04s", DepTime), format = "%H:%M"), 
+    units = "mins")))
+
+#Group the variables "CRSDepHour" and "CRSDepMinute" back to CRSDepTime adding a colon ":"
+#Group the variables "CRSArrHour" and "CRSArrMinute" back to CRSArrTime adding a colon ":"
+#Create a variable called CRSCommunteTime containg the time between the flight landing and taking-off
+df <- df %>%
+  unite(CRSDepTime, CRSDepHour, CRSDepMinute, sep = ":") %>%
+  unite(CRSArrTime, CRSArrHour, CRSArrMinute, sep = ":") %>%
+  mutate(CRSCommuteTime = as.numeric(difftime(
+    as.POSIXct(sprintf("%04s", CRSArrTime), format = "%H:%M"), 
+    as.POSIXct(sprintf("%04s", CRSDepTime), format = "%H:%M"), 
+    units = "mins")))
+
+#Define the rules for {validate}
+#Let's use the `validator()` to store the rules so they can be used more than once if needed.
+validation.rules <- validator(okActualElapsedTime = as.POSIXct(sprintf("%04s", ArrTime), format = "%H:%M") - as.POSIXct(sprintf("%04s", DepTime), format = "%H:%M") == ActualElapsedTime,      #Checks that ArrTime substract DepTime equals ActualElapsedTime
+                             okCRSElapsedTime = as.POSIXct(sprintf("%04s", CRSArrTime), format = "%H:%M") - as.POSIXct(sprintf("%04s", CRSDepTime), format = "%H:%M") == CRSElapsedTime)      #Checks that CRSArrTime substract CRSDepTime equals CRSElapsedTime
+
+#Now we can apply these rules to our data set.
+qual.check <- confront(df,validation.rules)
+summary(qual.check)
+
+# Produce a bar chart of the quality rule failures
+plot(qual.check, xlab = "")
+
+# Check which rows/observations fail which rule
+aggregate(qual.check, by="record")
+
+# Replace the values in columns "ActualElapsedTime" and "CRSElapsedTime" respectively by "CommuteTime" and "CRSCommuteTime" some instances are wrong
+df$ActualElapsedTime <- df$CommuteTime
+df$CRSElapsedTime <- df$CRSCommuteTime
+# And remove them since the become duplicates
+df = subset(df, select = -c(CommuteTime,CRSCommuteTime))
+
+validation.rules.edited <- validator(okActualElapsedTime = as.POSIXct(sprintf("%04s", ArrTime), format = "%H:%M") - as.POSIXct(sprintf("%04s", DepTime), format = "%H:%M") == ActualElapsedTime,   #Checks that ArrTime substract DepTime equals ActualElapsedTime
+                             okCRSElapsedTime = as.POSIXct(sprintf("%04s", CRSArrTime), format = "%H:%M") - as.POSIXct(sprintf("%04s", CRSDepTime), format = "%H:%M") == CRSElapsedTime)            #Checks that CRSArrTime substract CRSDepTime equals CRSElapsedTime
+
+#Now we can apply these rules to our data set.
+qual.check.edited <- confront(df,validation.rules.edited)
+
+# Produce a bar chart of the quality rule failures
+plot(qual.check.edited, xlab = "")
+
+#Export the data set to a CSV file
+write.table(df, file="Delay_Flight_Airport_Visibility_Cleaned.csv", sep =",")
+```

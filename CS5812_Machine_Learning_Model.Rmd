@@ -1,0 +1,628 @@
+---
+title: "CS5812: Predictive Data Analysis Coursework"
+output: html_notebook
+author: 1736500 (Don Kaluarachchi)
+---
+
+<center>
+[![](https://www.brunel.ac.uk/SiteElements/images/brunel-logo-blue.png)](https://www.brunel.ac.uk/)
+</center>
+
+# CS5812: Predictive Data Analysis Coursework
+
+- ### Data Description and Research Question
+- ### Data Preparation and Cleaning
+- ### Exploratory Data Analysis
+- ### **Machine Learning Prediction**
+- ### Deep Learning Prediction
+- ### Performance Evaluation and Comparison of Methods
+- ### Discussion of the Findings
+- ### Data Management Plan and Author Contribution statement
+
+```{r}
+# Installing and loading 'ggplot2'
+if(require(ggplot2) == FALSE){
+  install.packages('ggplot2')
+  library(ggplot2)
+}
+
+# Installing and loading 'dplyr'
+if(require(dplyr) == FALSE){
+  install.packages('dplyr')
+  library(dplyr)
+}
+
+# Installing and loading 'tree'
+if(require(tree) == FALSE){
+  install.packages('tree')
+  library(tree)
+}
+
+# Installing and loading 'randomForest'
+if(require(randomForest) == FALSE){
+  install.packages('randomForest')
+  library(randomForest)
+}
+
+# Installing and loading 'parallel'
+if(require(parallel) == FALSE){
+  install.packages('parallel')
+  library(parallel)
+}
+```
+
+# **Machine Learning Prediction**
+
+The dataset was loaded into the rmd file - with some basic statistical analysis being carried out. 
+
+```{r}
+# Loading the integrated dataset
+delayed_flights <- read.csv("Delay_Flight_Airport_Visibility.csv")
+
+# Visualising the dataset
+View(delayed_flights)
+
+# Visualising the structure of the dataset
+str(delayed_flights)
+
+# Visualising the dimensions of the dataset
+dim(delayed_flights)
+
+# Visualising the summary of the dataset
+summary(delayed_flights)
+
+# Visualising the attribute/column names of the dataset
+names(delayed_flights)
+
+# Visualising the first six rows of the dataset
+head(delayed_flights)
+
+# Visualising the last six rows of the dataset 
+tail(delayed_flights)
+```
+
+Trying to build a regression model to determine what the ouput of this would be.
+
+```{r}
+# Building a linear regression model using all of the attributes in the dataset
+delayMaxModel <- lm(DepDelay ~ DayofMonth + DayOfWeek + DepTime + ArrTime + CRSElapsedTime + AirTime + Origin.City + Destination.City + AirTime + visibility + Distance +  + UniqueCarrier, data=delayed_flights)
+
+# Building a linear regression model using all of the attributes affecting departure delay from the dataset
+delayMaxModel <- lm(DepDelay ~ AirTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier, data=delayed_flights)
+
+# Sumamrising the model that was built
+summary(delayMaxModel)
+
+# Using the ‘step’ function can be used to achieve a minimal adequate model.
+step(delayMaxModel)
+```
+
+Visualising numeric attributes of the dataset.
+
+```{r}
+# Creating a subset of numeric attributes
+delayed_flights_numeric <- delayed_flights[,sapply(delayed_flights, is.numeric)]
+
+# Visualising the correlation between the attributes
+cor(delayed_flights_numeric)
+```
+
+## **Random Forest**
+
+Building an ensemble learning model using Random Forest. The different models contained different parameters and hyperparameters (including architectures).
+
+- Classifying delays into two sets of groups (i.e. into 2 and 3 categories)
+- Classifying delays by using two sets of attributes 
+- Classifying delays by using three different numbers of trees
+
+## Classifying delays into two sets of groups: **Short Delay and Long Delay**
+
+```{r}
+# Creating new column (Delayed Departure) with two types of delayed groups
+delayed_flights$DelayedDeparture <- ifelse((delayed_flights$DepDelay <= 45), 'Short Delay', 'Long Delay')
+
+# Visualising new column (Delayed Departure)
+table(delayed_flights$DelayedDeparture)
+
+# Converting data type of new column (Delayed Departure) to a factor
+delayed_flights$DelayedDeparture <- as.factor(delayed_flights$DelayedDeparture)
+```
+
+## Classifying delays into two sets of groups: **AirTime, Visibility, Distance, Origin.City, and UniqueCarrier**
+
+```{r}
+# Defining the formula for predicting Delayed Departure
+delayed_flights_formula = DelayedDeparture ~ AirTime + visibility + Distance + Origin.City + UniqueCarrier
+
+# Defining the formula for predicting Delayed Departure
+delayed_flights_formula = DelayedDeparture ~ AirTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier
+```
+
+```{r}
+# Setting random seed to make the implementation repeatable
+set.seed(1999)
+
+# Creating a 70/30 training/test set split
+n_rows <- nrow(delayed_flights)
+
+# Sampling 70% (n_rows * 0.7) indices in the ranges 1:nrows
+training_idx <- sample(n_rows, n_rows * 0.7)
+
+# Filtering the data frame with the training indices (and the complement)
+training_delayed_flights <- delayed_flights[training_idx,]
+test_delayed_flights <- delayed_flights[-training_idx,]
+```
+
+## Classifying delays by using three different numbers of trees: **50 trees**
+
+```{r}
+# Train a model with random forest - using 50 trees
+rf_delayed_flights <- randomForest(as.factor(DelayedDeparture) ~ AirTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier, ntree = 50, importance = T, data = training_delayed_flights)
+```
+
+```{r}
+# Plotting error rates of random forest model
+plot(rf_delayed_flights, main="Random Forest Error Rates")
+
+# Plotting importance of attributes (from the random forest model built)
+varImpPlot(rf_delayed_flights, type = 1, main="Random Forest Attribute Importance")
+```
+
+```{r}
+# Predicting (classifying) the 'departure delay' by removing delay attribute from the testing set
+rf_delayed_flights_pred <- predict(rf_delayed_flights, test_delayed_flights [,-47], type= "class")
+
+# Creating a contingency table for the actual and predicted for the random forest model
+rf_results_table <- table(rf = rf_delayed_flights_pred,  actual = test_delayed_flights$DelayedDeparture)
+
+# Visualising the contingency table created
+rf_results_table
+
+# Calculating the accuracy of the random forest model using the contigency table
+acc_rf <- sum(diag(rf_results_table)) / sum(rf_results_table)
+
+# Visualising the accuracy of the random forest model
+acc_rf*100
+```
+
+## Classifying delays by using three different numbers of trees: **100 trees**
+
+```{r}
+# Train a model with random forest - using 100 trees
+rf_delayed_flights <- randomForest(as.factor(DelayedDeparture) ~ AirTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier, ntree = 100, importance = T, data = training_delayed_flights)
+```
+
+```{r}
+# Plotting error rates of random forest model
+plot(rf_delayed_flights, main="Random Forest Error Rates")
+
+# Plotting importance of attributes (from the random forest model built)
+varImpPlot(rf_delayed_flights, type = 1, main="Random Forest Attribute Importance")
+```
+
+```{r}
+# Predicting (classifying) the 'departure delay' by removing delay attribute from the testing set
+rf_delayed_flights_pred <- predict(rf_delayed_flights, test_delayed_flights [,-47], type= "class")
+
+# Creating a contingency table for the actual and predicted for the random forest model
+rf_results_table <- table(rf = rf_delayed_flights_pred,  actual = test_delayed_flights$DelayedDeparture)
+
+# Visualising the contingency table created
+rf_results_table
+
+# Calculating the accuracy of the random forest model using the contigency table
+acc_rf <- sum(diag(rf_results_table)) / sum(rf_results_table)
+
+# Visualising the accuracy of the random forest model
+acc_rf*100
+```
+
+## Classifying delays by using three different numbers of trees: **150 trees**
+
+```{r}
+# Train a model with random forest - using 150 trees
+rf_delayed_flights <- randomForest(as.factor(DelayedDeparture) ~ AirTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier, ntree = 150, importance = T, data = training_delayed_flights)
+```
+
+```{r}
+# Plotting error rates of random forest model
+plot(rf_delayed_flights, main="Random Forest Error Rates")
+
+# Plotting importance of attributes (from the random forest model built)
+varImpPlot(rf_delayed_flights, type = 1, main="Random Forest Attribute Importance")
+```
+
+```{r}
+# Predicting (classifying) the 'departure delay' by removing delay attribute from the testing set
+rf_delayed_flights_pred <- predict(rf_delayed_flights, test_delayed_flights [,-47], type= "class")
+
+# Creating a contingency table for the actual and predicted for the random forest model
+rf_results_table <- table(rf = rf_delayed_flights_pred,  actual = test_delayed_flights$DelayedDeparture)
+
+# Visualising the contingency table created
+rf_results_table
+
+# Calculating the accuracy of the random forest model using the contigency table
+acc_rf <- sum(diag(rf_results_table)) / sum(rf_results_table)
+
+# Visualising the accuracy of the random forest model
+acc_rf*100
+```
+
+## Classifying delays into two sets of groups: **AirTime, Visibility, Distance, Origin.City, and UniqueCarrier**
+
+```{r}
+# Defining the formula for predicting Delayed Departure
+delayed_flights_formula = DelayedDeparture ~ AirTime + visibility + Distance + Origin.City + UniqueCarrier
+
+# Defining the formula for predicting Delayed Departure
+delayed_flights_formula = DelayedDeparture ~ AirTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier
+```
+
+```{r}
+# Setting random seed to make the implementation repeatable
+set.seed(1999)
+
+# Creating a 70/30 training/test set split
+n_rows <- nrow(delayed_flights)
+
+# Sampling 70% (n_rows * 0.7) indices in the ranges 1:nrows
+training_idx <- sample(n_rows, n_rows * 0.7)
+
+# Filtering the data frame with the training indices (and the complement)
+training_delayed_flights <- delayed_flights[training_idx,]
+test_delayed_flights <- delayed_flights[-training_idx,]
+```
+
+## Classifying delays by using three different numbers of trees: **50 trees**
+
+```{r}
+# Train a model with random forest - using 50 trees
+rf_delayed_flights <- randomForest(as.factor(DelayedDeparture) ~ AirTime + CRSElapsedTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier, ntree = 50, importance = T, data = training_delayed_flights)
+```
+
+```{r}
+# Plotting error rates of random forest model
+plot(rf_delayed_flights, main="Random Forest Error Rates")
+
+# Plotting importance of attributes (from the random forest model built)
+varImpPlot(rf_delayed_flights, type = 1, main="Random Forest Attribute Importance")
+```
+
+```{r}
+# Predicting (classifying) the 'departure delay' by removing delay attribute from the testing set
+rf_delayed_flights_pred <- predict(rf_delayed_flights, test_delayed_flights [,-47], type= "class")
+
+# Creating a contingency table for the actual and predicted for the random forest model
+rf_results_table <- table(rf = rf_delayed_flights_pred,  actual = test_delayed_flights$DelayedDeparture)
+
+# Visualising the contingency table created
+rf_results_table
+
+# Calculating the accuracy of the random forest model using the contigency table
+acc_rf <- sum(diag(rf_results_table)) / sum(rf_results_table)
+
+# Visualising the accuracy of the random forest model
+acc_rf*100
+```
+
+## Classifying delays by using three different numbers of trees: **100 trees**
+
+```{r}
+# Train a model with random forest - using 100 trees
+rf_delayed_flights <- randomForest(as.factor(DelayedDeparture) ~ AirTime + CRSElapsedTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier, ntree = 100, importance = T, data = training_delayed_flights)
+```
+
+```{r}
+# Plotting error rates of random forest model
+plot(rf_delayed_flights, main="Random Forest Error Rates")
+
+# Plotting importance of attributes (from the random forest model built)
+varImpPlot(rf_delayed_flights, type = 1, main="Random Forest Attribute Importance")
+```
+
+```{r}
+# Predicting (classifying) the 'departure delay' by removing delay attribute from the testing set
+rf_delayed_flights_pred <- predict(rf_delayed_flights, test_delayed_flights [,-47], type= "class")
+
+# Creating a contingency table for the actual and predicted for the random forest model
+rf_results_table <- table(rf = rf_delayed_flights_pred,  actual = test_delayed_flights$DelayedDeparture)
+
+# Visualising the contingency table created
+rf_results_table
+
+# Calculating the accuracy of the random forest model using the contigency table
+acc_rf <- sum(diag(rf_results_table)) / sum(rf_results_table)
+
+# Visualising the accuracy of the random forest model
+acc_rf*100
+```
+
+## Classifying delays by using three different numbers of trees: **150 trees**
+
+```{r}
+# Train a model with random forest - using 150 trees
+rf_delayed_flights <- randomForest(as.factor(DelayedDeparture) ~ AirTime + CRSElapsedTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier, ntree = 150, importance = T, data = training_delayed_flights)
+```
+
+```{r}
+# Plotting error rates of random forest model
+plot(rf_delayed_flights, main="Random Forest Error Rates")
+
+# Plotting importance of attributes (from the random forest model built)
+varImpPlot(rf_delayed_flights, type = 1, main="Random Forest Attribute Importance")
+```
+
+```{r}
+# Predicting (classifying) the 'departure delay' by removing delay attribute from the testing set
+rf_delayed_flights_pred <- predict(rf_delayed_flights, test_delayed_flights [,-47], type= "class")
+
+# Creating a contingency table for the actual and predicted for the random forest model
+rf_results_table <- table(rf = rf_delayed_flights_pred,  actual = test_delayed_flights$DelayedDeparture)
+
+# Visualising the contingency table created
+rf_results_table
+
+# Calculating the accuracy of the random forest model using the contigency table
+acc_rf <- sum(diag(rf_results_table)) / sum(rf_results_table)
+
+# Visualising the accuracy of the random forest model
+acc_rf*100
+```
+
+## Classifying delays into two sets of groups: **Minor, Moderate, and Significant Delay**
+
+```{r}
+# Creating new column (Delayed Departure) with two types of delayed groups
+delayed_flights$DelayedDeparture <- ifelse((delayed_flights$DepDelay <= 30), 'Minor Delay',
+                                   ifelse((delayed_flights$DepDelay > 30) & (delayed_flights$DepDelay <= 90), 
+                                          'Moderate Delay', 'Significant Delay'))
+
+# Visualising new column (Delayed Departure)
+table(delayed_flights$DelayedDeparture)
+
+# Converting data type of new column (Delayed Departure) to a factor
+delayed_flights$DelayedDeparture <- as.factor(delayed_flights$DelayedDeparture)
+```
+
+## Classifying delays into two sets of groups: **AirTime, Visibility, Distance, Origin.City, and UniqueCarrier**
+
+```{r}
+# Defining the formula for predicting Delayed Departure
+delayed_flights_formula = DelayedDeparture ~ AirTime + visibility + Distance + Origin.City + UniqueCarrier
+
+# Defining the formula for predicting Delayed Departure
+delayed_flights_formula = DelayedDeparture ~ AirTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier
+```
+
+```{r}
+# Setting random seed to make the implementation repeatable
+set.seed(1999)
+
+# Creating a 70/30 training/test set split
+n_rows <- nrow(delayed_flights)
+
+# Sampling 70% (n_rows * 0.7) indices in the ranges 1:nrows
+training_idx <- sample(n_rows, n_rows * 0.7)
+
+# Filtering the data frame with the training indices (and the complement)
+training_delayed_flights <- delayed_flights[training_idx,]
+test_delayed_flights <- delayed_flights[-training_idx,]
+```
+
+## Classifying delays by using three different numbers of trees: **50 trees**
+
+```{r}
+# Train a model with random forest - using 50 trees
+rf_delayed_flights <- randomForest(as.factor(DelayedDeparture) ~ AirTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier, ntree = 50, importance = T, data = training_delayed_flights)
+```
+
+```{r}
+# Plotting error rates of random forest model
+plot(rf_delayed_flights, main="Random Forest Error Rates")
+
+# Plotting importance of attributes (from the random forest model built)
+varImpPlot(rf_delayed_flights, type = 1, main="Random Forest Attribute Importance")
+```
+
+```{r}
+# Predicting (classifying) the 'departure delay' by removing delay attribute from the testing set
+rf_delayed_flights_pred <- predict(rf_delayed_flights, test_delayed_flights [,-47], type= "class")
+
+# Creating a contingency table for the actual and predicted for the random forest model
+rf_results_table <- table(rf = rf_delayed_flights_pred,  actual = test_delayed_flights$DelayedDeparture)
+
+# Visualising the contingency table created
+rf_results_table
+
+# Calculating the accuracy of the random forest model using the contigency table
+acc_rf <- sum(diag(rf_results_table)) / sum(rf_results_table)
+
+# Visualising the accuracy of the random forest model
+acc_rf*100
+```
+
+## Classifying delays by using three different numbers of trees: **100 trees**
+
+```{r}
+# Train a model with random forest - using 100 trees
+rf_delayed_flights <- randomForest(as.factor(DelayedDeparture) ~ AirTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier, ntree = 100, importance = T, data = training_delayed_flights)
+```
+
+```{r}
+# Plotting error rates of random forest model
+plot(rf_delayed_flights, main="Random Forest Error Rates")
+
+# Plotting importance of attributes (from the random forest model built)
+varImpPlot(rf_delayed_flights, type = 1, main="Random Forest Attribute Importance")
+```
+
+```{r}
+# Predicting (classifying) the 'departure delay' by removing delay attribute from the testing set
+rf_delayed_flights_pred <- predict(rf_delayed_flights, test_delayed_flights [,-47], type= "class")
+
+# Creating a contingency table for the actual and predicted for the random forest model
+rf_results_table <- table(rf = rf_delayed_flights_pred,  actual = test_delayed_flights$DelayedDeparture)
+
+# Visualising the contingency table created
+rf_results_table
+
+# Calculating the accuracy of the random forest model using the contigency table
+acc_rf <- sum(diag(rf_results_table)) / sum(rf_results_table)
+
+# Visualising the accuracy of the random forest model
+acc_rf*100
+```
+
+## Classifying delays by using three different numbers of trees: **150 trees**
+
+```{r}
+# Train a model with random forest - using 150 trees
+rf_delayed_flights <- randomForest(as.factor(DelayedDeparture) ~ AirTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier, ntree = 150, importance = T, data = training_delayed_flights)
+```
+
+```{r}
+# Plotting error rates of random forest model
+plot(rf_delayed_flights, main="Random Forest Error Rates")
+
+# Plotting importance of attributes (from the random forest model built)
+varImpPlot(rf_delayed_flights, type = 1, main="Random Forest Attribute Importance")
+```
+
+```{r}
+# Predicting (classifying) the 'departure delay' by removing delay attribute from the testing set
+rf_delayed_flights_pred <- predict(rf_delayed_flights, test_delayed_flights [,-47], type= "class")
+
+# Creating a contingency table for the actual and predicted for the random forest model
+rf_results_table <- table(rf = rf_delayed_flights_pred,  actual = test_delayed_flights$DelayedDeparture)
+
+# Visualising the contingency table created
+rf_results_table
+
+# Calculating the accuracy of the random forest model using the contigency table
+acc_rf <- sum(diag(rf_results_table)) / sum(rf_results_table)
+
+# Visualising the accuracy of the random forest model
+acc_rf*100
+```
+
+## Classifying delays into two sets of groups: **AirTime, Visibility, Distance, Origin.City, and UniqueCarrier**
+
+```{r}
+# Defining the formula for predicting Delayed Departure
+delayed_flights_formula = DelayedDeparture ~ AirTime + visibility + Distance + Origin.City + UniqueCarrier
+
+# Defining the formula for predicting Delayed Departure
+delayed_flights_formula = DelayedDeparture ~ AirTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier
+```
+
+```{r}
+# Setting random seed to make the implementation repeatable
+set.seed(1999)
+
+# Creating a 70/30 training/test set split
+n_rows <- nrow(delayed_flights)
+
+# Sampling 70% (n_rows * 0.7) indices in the ranges 1:nrows
+training_idx <- sample(n_rows, n_rows * 0.7)
+
+# Filtering the data frame with the training indices (and the complement)
+training_delayed_flights <- delayed_flights[training_idx,]
+test_delayed_flights <- delayed_flights[-training_idx,]
+```
+
+## Classifying delays by using three different numbers of trees: **50 trees**
+
+```{r}
+# Train a model with random forest - using 50 trees
+rf_delayed_flights <- randomForest(as.factor(DelayedDeparture) ~ AirTime + CRSElapsedTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier, ntree = 50, importance = T, data = training_delayed_flights)
+```
+
+```{r}
+# Plotting error rates of random forest model
+plot(rf_delayed_flights, main="Random Forest Error Rates")
+
+# Plotting importance of attributes (from the random forest model built)
+varImpPlot(rf_delayed_flights, type = 1, main="Random Forest Attribute Importance")
+```
+
+```{r}
+# Predicting (classifying) the 'departure delay' by removing delay attribute from the testing set
+rf_delayed_flights_pred <- predict(rf_delayed_flights, test_delayed_flights [,-47], type= "class")
+
+# Creating a contingency table for the actual and predicted for the random forest model
+rf_results_table <- table(rf = rf_delayed_flights_pred,  actual = test_delayed_flights$DelayedDeparture)
+
+# Visualising the contingency table created
+rf_results_table
+
+# Calculating the accuracy of the random forest model using the contigency table
+acc_rf <- sum(diag(rf_results_table)) / sum(rf_results_table)
+
+# Visualising the accuracy of the random forest model
+acc_rf*100
+```
+
+## Classifying delays by using three different numbers of trees: **100 trees**
+
+```{r}
+# Train a model with random forest - using 100 trees
+rf_delayed_flights <- randomForest(as.factor(DelayedDeparture) ~ AirTime + CRSElapsedTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier, ntree = 100, importance = T, data = training_delayed_flights)
+```
+
+```{r}
+# Plotting error rates of random forest model
+plot(rf_delayed_flights, main="Random Forest Error Rates")
+
+# Plotting importance of attributes (from the random forest model built)
+varImpPlot(rf_delayed_flights, type = 1, main="Random Forest Attribute Importance")
+```
+
+```{r}
+# Predicting (classifying) the 'departure delay' by removing delay attribute from the testing set
+rf_delayed_flights_pred <- predict(rf_delayed_flights, test_delayed_flights [,-47], type= "class")
+
+# Creating a contingency table for the actual and predicted for the random forest model
+rf_results_table <- table(rf = rf_delayed_flights_pred,  actual = test_delayed_flights$DelayedDeparture)
+
+# Visualising the contingency table created
+rf_results_table
+
+# Calculating the accuracy of the random forest model using the contigency table
+acc_rf <- sum(diag(rf_results_table)) / sum(rf_results_table)
+
+# Visualising the accuracy of the random forest model
+acc_rf*100
+```
+
+## Classifying delays by using three different numbers of trees: **150 trees**
+
+```{r}
+# Train a model with random forest - using 150 trees
+rf_delayed_flights <- randomForest(as.factor(DelayedDeparture) ~ AirTime + CRSElapsedTime + Origin.City + Destination.City + visibility + Distance + UniqueCarrier, ntree = 150, importance = T, data = training_delayed_flights)
+```
+
+```{r}
+# Plotting error rates of random forest model
+plot(rf_delayed_flights, main="Random Forest Error Rates")
+
+# Plotting importance of attributes (from the random forest model built)
+varImpPlot(rf_delayed_flights, type = 1, main="Random Forest Attribute Importance")
+```
+
+```{r}
+# Predicting (classifying) the 'departure delay' by removing delay attribute from the testing set
+rf_delayed_flights_pred <- predict(rf_delayed_flights, test_delayed_flights [,-47], type= "class")
+
+# Creating a contingency table for the actual and predicted for the random forest model
+rf_results_table <- table(rf = rf_delayed_flights_pred,  actual = test_delayed_flights$DelayedDeparture)
+
+# Visualising the contingency table created
+rf_results_table
+
+# Calculating the accuracy of the random forest model using the contigency table
+acc_rf <- sum(diag(rf_results_table)) / sum(rf_results_table)
+
+# Visualising the accuracy of the random forest model
+acc_rf*100
+```

@@ -1,0 +1,297 @@
+---
+title: "CS5812: Predictive Data Analysis Coursework"
+output: html_notebook
+author: 1724017 (Vasile Damian), 1736500 (Don Kaluarachchi), 2045256 (Taruna Bagh), 2045325 (Dalia Albusairi), and 2049384 (Amir Muna)
+---
+
+<center>
+[![](https://www.brunel.ac.uk/SiteElements/images/brunel-logo-blue.png)](https://www.brunel.ac.uk/)
+</center>
+
+# CS5812: Predictive Data Analysis Coursework
+
+### Data Description and Research Question
+### Data Preparation and Cleaning
+### **Exploratory Data Analysis**
+### Machine Learning Prediction
+### Deep Learning Prediction
+### Performance Evaluation and Comparison of Methods
+### Discussion of the Findings
+### Data Management Plan and Author Contribution statement
+
+# **Exploratory Data Analysis**
+
+```{r}
+# Installing 'ggplot2'
+#install.packages("ggplot2")
+# Loading the 'ggplot2' library
+library(ggplot2)
+
+# Installing 'dplyr'
+#install.packages("dplyr")
+# Loading the 'dplyr' library
+library(dplyr)
+
+# Installing 'VIM'
+#install.packages("VIM")
+# Loading the 'VIM' library
+library(VIM)
+
+# Installing 'validate'
+#install.packages("validate")
+# Loading the 'validate' library
+library(validate)
+
+# Installing 'factoextra'
+#install.packages("factoextra")
+# Loading the 'factoextra' library
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("kassambara/factoextra")
+library(factoextra)
+
+# Installing 'ggbiplot'
+#install.packages("ggbiplot")
+# Loading the 'ggbiplot' library
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("vqv/ggbiplot")
+library(ggbiplot)
+```
+
+### Author: *Don Kaluarachchi*
+
+```{r}
+# Loading the integrated dataset
+delayed_flights <-  read_csv("/Users/admin/Desktop/Term 2/ML-DL/rmd/Delay_Flight_Airport_Visibility_Cleaned.csv")
+delayed_flights_original <-  read_csv("/Users/admin/Desktop/Term 2/ML-DL/rmd/Delay_Flight_Airport_Visibility_Cleaned.csv")
+```
+
+```{r}
+# Visualising the dataset.
+View(delayed_flights)
+
+# Visualising the structure of the dataset.
+str(delayed_flights)
+
+# Visualising the dimensions of the dataset.
+dim(delayed_flights)
+
+# Visualising the summary of the dataset.
+summary(delayed_flights)
+
+# Visualising the attribute/column names of the dataset. 
+names(delayed_flights)
+
+# Visualising the first six rows of the dataset. 
+head(delayed_flights)
+
+# Visualising the last six rows of the dataset. 
+tail(delayed_flights)
+```
+
+```{r}
+# An alternative method of creating a subset with only numeric attributes
+delayed_flights_numeric <- delayed_flights[,sapply(delayed_flights, is.numeric)]
+
+# Visualising the new subset
+head(delayed_flights_numeric)
+```
+
+```{r}
+# Visualising the summary of all the attributes in the new dataset (as the first step of EDA).
+summary(delayed_flights_numeric)
+```
+
+```{r}
+# Visualising the dataset.
+View(delayed_flights_numeric)
+
+# Visualising the structure of the dataset.
+str(delayed_flights_numeric)
+
+# Visualising the dimensions of the dataset.
+dim(delayed_flights_numeric)
+
+# Visualising the summary of the dataset.
+summary(delayed_flights_numeric)
+
+# Visualising the attribute/column names of the dataset. 
+names(delayed_flights_numeric)
+
+# Visualising the first six rows of the dataset. 
+head(delayed_flights_numeric)
+
+# Visualising the last six rows of the dataset. 
+tail(delayed_flights_numeric)
+```
+
+```{r}
+# Calculating the correlation coefficient for each pair of variables
+cor(delayed_flights_numeric)
+```
+
+```{r}
+# Visualising a matrix of scatterplots (for all of the different attributes).
+pairs(delayed_flights_numeric,panel=panel.smooth)
+```
+
+```{r}
+# Performing Principal Component Analysis
+pc_delayed_flights <- prcomp(delayed_flights_numeric, center = T, scale. = T)
+
+# inspect the attributes of the PCA object returned by prcomp
+attributes(pc_delayed_flights)
+```
+
+### Author:Taruna Bagh
+
+```{r}
+#removing all the NAs for the Principal component analysis
+delayed_flights <- na.omit(delayed_flights_numeric)
+
+# Performing Principal Component Analysis
+
+#In order to identify the zero-variance column, we may use which function
+delayed_flights_pca <- prcomp(delayed_flights[ , which(apply(delayed_flights, 2, var) != 0)]
+, scale. = T)
+
+#Visualize eigenvalues (scree plot). Show the percentage of variances explained by each principal component.
+fviz_eig(delayed_flights_pca)
+
+# inspect the attributes of the PCA object returned by prcomp
+attributes(delayed_flights_pca)
+```
+
+```{r}
+#Plotting Individuals with a similar profile and grouping them together.
+fviz_pca_var(delayed_flights_pca,col.var="contrib")+
+   theme(text = element_text(size = 7.5),
+         axis.title = element_text(size = 7.5),
+         axis.text = element_text(size = 7.5)
+         )
+```
+
+#Plotting to check contributions of various variables. Positive correlated variables point to the same side of the plot. Negative correlated variables point to opposite sides of the graph.
+
+```{r}
+fviz_pca_ind(delayed_flights_pca,gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),col.ind="cos2")+
+   theme(text = element_text(size = 7.5),
+         axis.title = element_text(size = 7.5),
+         axis.text = element_text(size = 7.5)
+         )
+
+# Control automatically the color of individuals using the cos2
+fviz_pca_biplot(delayed_flights_pca, label ="var", col.ind="cos2") +
+       theme_minimal()
+```
+
+
+```{r}
+# Helper function - created to check variance amongst the loadings of the pca object
+var_coord_func <- function(loadings, comp.sdev){
+  loadings*comp.sdev
+}
+
+# Compute Coordinates
+loadings <- delayed_flights_pca$rotation
+sdev <- delayed_flights_pca$sdev
+var.coord <- t(apply(loadings, 1, var_coord_func, sdev)) 
+head(var.coord[, 1:4])
+
+#checking summary and loadings of pca object
+loadings
+summary(delayed_flights_pca)
+str(delayed_flights_pca)
+
+# Calculating the proportion of exaplained variance (PEV)
+pc_delayed_flights_var <- delayed_flights_pca$sdev^2
+pc_delayed_flights_var
+pc_delayed_flights_PEV <- pc_delayed_flights_var / sum(pc_delayed_flights_var)
+pc_delayed_flights_PEV
+
+# Plotting the variance per PC
+plot(pc_delayed_flights_var)
+```
+
+### Author: *Don Kaluarachchi*
+
+```{r}
+# Calculating the proportion of exaplained variance (PEV)
+pc_delayed_flights_var <- pc_delayed_flights$sdev^2
+pc_delayed_flights_var
+pc_delayed_flights_PEV <- pc_delayed_flights_var / sum(pc_delayed_flights_var)
+pc_delayed_flights_PEV
+
+# Plotting the variance per PC
+plot(pc_delayed_flights_var)
+```
+
+```{r}
+# Sampling data - setting a seed to make the implementation repeatable
+set.seed(9999)
+
+# Sampling data
+dk <- sample (3, nrow(delayed_flights_numeric), replace = T, prob=c(0.1,0.4,0.5))
+subset01 <- delayed_flights_numeric[dk == 1,]
+```
+
+```{r}
+# Performing K means clustering
+delayed_flights_numeric <- na.omit(subset01)
+
+k_delayed_flights_numeric = kmeans(subset01[,-1], 5)
+k_delayed_flights_numeric
+
+plot(k_delayed_flights_numeric)
+
+# Getting the cluster id from the kmeans object
+k_delayed_flights_numeric_id <- k_delayed_flights_numeric$cluster
+
+# Visualising Clusters
+k_delayed_flights_numeric_id
+```
+
+```{r}
+# Performing K means clustering
+delayed_flights_numeric <- na.omit(delayed_flights_numeric)
+
+k_delayed_flights_numeric = kmeans(delayed_flights_numeric[,-1], 5)
+k_delayed_flights_numeric
+
+plot(k_delayed_flights_numeric)
+
+# Getting the cluster id from the kmeans object
+k_delayed_flights_numeric_id <- k_delayed_flights_numeric$cluster
+
+# Visualising Clusters
+k_delayed_flights_numeric_id
+```
+
+```{r}
+# Performing hierarchical clustering
+dist_delayed_flights_numeric <- dist(subset01[,-1], method = 'euclidian')
+#   then apply complete linkage
+hc_delayed_flights_numeric <- hclust(dist_delayed_flights_numeric, method = 'complete')
+hc_delayed_flights_numeric
+
+
+# 'Cutting' the dendrogram to select one partition with 5 groups
+hc_delayed_flights_numeric_cut <- cutree(hc_delayed_flights_numeric, k = 5)
+
+plot(hc_delayed_flights_numeric_cut, hang = -0.1 )
+
+# Ploting the associated dendrogram
+plot(hc_delayed_flights_numeric, hang = -0.1 )
+```
+
+```{r}
+# Using silhoutte plots
+
+# Install the package cluster
+if(require(cluster) == FALSE){
+    install.packages('cluster')
+}
+
+# Calculating the silhoutte score for the two cluster solutions
+sil_hc <- cluster::silhouette(hc_delayed_flights_numeric, dist_delayed_flights_numeric)
+sil_k <- cluster::silhouette(k_delayed_flights_numeric, dist_delayed_flights_numeric)
+```
